@@ -1,70 +1,19 @@
 # Arpeggio
 
-[![Build Status](https://travis-ci.org/harryjubb/arpeggio.svg?branch=master)](https://travis-ci.org/harryjubb/arpeggio)
+Notice
+------
 
-## Outline
+Arpeggio is stable but not currently under active development.
 
-Arpeggio calculates interatomic contacts based on the rules defined in [CREDO](http://marid.bioc.cam.ac.uk/credo). The program is freely available and requires only Open Source dependencies.
+We've moved the repository to https://github.com/harryjubb/arpeggio for any further updates. Please open any new issues at the new location.
 
-If you make use of Arpeggio, please cite the following article:
+Outline
+--------
 
-Harry C Jubb, Alicia P Higueruelo, Bernardo Ochoa-Montaño, Will R Pitt, David B Ascher, Tom L Blundell,
-Arpeggio: A Web Server for Calculating and Visualising Interatomic Interactions in Protein Structures,
-Journal of Molecular Biology,
-Volume 429, Issue 3,
-2017,
-Pages 365-371,
-ISSN 0022-2836,
-https://doi.org/10.1016/j.jmb.2016.12.004.
-(http://www.sciencedirect.com/science/article/pii/S0022283616305332)
+Arpeggio calculates interatomic contacts based on the rules defined in [CREDO](http://marid.bioc.cam.ac.uk/credo). The program will be freely available and require only Open Source dependencies.
 
-## Getting Started
-
-**Stuck?** Start here, and see also the [FAQ](https://github.com/harryjubb/arpeggio#frequently-asked-questions).
-
-### Web Interface
-
-If you would like to run Arpeggio on a small number of individual structures, the easiest way to get started is to use the [web interface](http://biosig.unimelb.edu.au/arpeggioweb/).
-
-### Programmatically
-
-If you need to use Arpeggio programmatically or to run for many structures:
-
-The easiest way to get started is using [Docker](https://www.docker.com/).
-
-#### Using the public Docker image
-
-Arpeggio's Docker image is [hosted on DockerHub](https://hub.docker.com/r/harryjubb/arpeggio/). To use:
-
-    docker pull harryjubb/arpeggio
-
-Once downloaded, Arpeggio can be run using:
-
-    docker run --rm -v "$(pwd)":/run -u `id -u`:`id -g` -it harryjubb/arpeggio python arpeggio.py /run/1XKK.pdb -s RESNAME:FMM -v
-
-Breaking this down:
-
-- `docker run`: run the image
-- `--rm`: clean up the Docker container when the run is finished
-- `-v`: bind-mount a host machine directory in the container (with your input files, and where your output files will appear). In this case, the current working directory will be mounted to `/run` in the container
-- ``-u `id -u`:`id -g` ``: Set the user and group in the Docker container to match the host user and group running the container, so that any files written are written as the correct user
-- `-it`: interactive run with a pseudo-TTY terminal
-- `arpeggio`: the name of the built Docker image
-- `python arpeggio.py`: run Arpeggio
-- `/run/1XKK.pdb`: a PDB file in our mounted host directory
-- `-s RESNAME:FMM -v`: options passed to Arpeggio, in this case, to calculate interactions for residue with name FMM, and show verbose output
-
-#### Building the Docker image
-
-You can build the docker image from inside this repository with:
-
-    docker build -t 'arpeggio' .
-
-#### Installing without Docker
-
-If it is not possible to use Docker, please read on for dependencies for manual installation.
-
-## Dependencies
+Dependencies
+------------
 
 Arpeggio is written in Python and currently has the following dependencies:
 
@@ -80,7 +29,8 @@ Arpeggio is written in Python and currently has the following dependencies:
 
 Arpeggio may work with earlier versions of BioPython, however these haven't been tested. It is recommended that each dependency be the latest version.
 
-## Running
+Running
+-------
 
 `python arpeggio.py pdb [options]`
 
@@ -88,33 +38,8 @@ Use `python arpeggio.py -h` for available options.
 
 Arpeggio doesn't do any checking of your PDB structure, other than what BioPython does by default. Alternate locations and missing density are not explicitly accounted for and may result in anomalous results. Please use with caution.
 
-## Frequently Asked Questions
-
-**See also the [GitHub issue questions](https://github.com/harryjubb/arpeggio/issues?utf8=%E2%9C%93&q=label%3Aquestion).**
-
-### BioPython/OpenBabel are complaining about my structure, what's happening?
-
-Both can be picky about the format of PDB files, for example atom serials must be unique (to map between BioPython and OpenBabel structures), and other issues can raise BioPython errors.
-
-The `clean_pdb.py` script in https://github.com/harryjubb/pdbtools resolves a number of common errors; if your structure doesn't work, try using that first before trying Arpeggio on the cleaned structure.
-
-### My results don't match the output of the web server, what's happening?
-
-In order to prevent errors from BioPython/OpenBabel (described above) causing Arpeggio to fail, the web server preprocesses input PDB files before running Arpeggio. The `clean_pdb.py` script in https://github.com/harryjubb/pdbtools provides this functionality outside of the web server.
-
-Please also be aware that changing command line options may also result in differences from the web server's output. Arpeggio is run on the web server with the `-wh` option, and an optional selection.
-
-### What happens if my structure does or doesn't have hydrogens?
-
-Arpeggio will add hydrogens using OpenBabel if none are present in the input structure. If your input structure has at least one hydrogen, then hydrogen addition is skipped, and input hydrogens are used. Arpeggio will not add any missing hydrogens to any input structure with at least one hydrogen in (e.g. protein hydrogens will not be added if the ligand is hydrogenated). It is advisable to pre-prepare input structures with a robust hydrogen addition method before running Arpeggio.
-
-### How do I determine interactions for multiple residues, e.g. for a protein-protein interface?
-
-Specify multiple `-s` selection options to define your interface, e.g. `-s /A/100/ -s /A/101/ -s /A/102/ -s /A/103/ -s /A/104/ -s /A/104/ -s /A/106/`
-
-Run `arpeggio.py` with the `-h` option to see help on the selection syntax.
-
-## Output Files
+Output Files
+------------
 
 ### `*.ari`
 
